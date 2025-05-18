@@ -1,12 +1,32 @@
 body {
 	margin: 0;
-	background: radial-gradient(circle at center, #2a3f5f, #1a1a2e);
+	background: 
+		line-gradient(135deg, rgba(42, 63, 95, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%),
+		radial-gradient(circle at 50% 50%, rgba(66, 134, 244, 0.15) 0%, transparent 50%),
+		radial-gradient(circle at 100% 0%, rgba(255, 165, 0, 0.15) 0%, transparent 50%),
+		radial-gradient(circle at 0% 100%, rgba(138, 43, 226, 0.15) 0%, transparent 50%);
+	background-attachment: fixed;
 	color: #fff;
 	font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
 	font-size: 14px;
 	line-height: 24px;
 	overscroll-behavior: none;
 	overflow: hidden;
+	position: relative;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: 
+		radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0) 50%),
+		radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0) 50%);
+	animation: shimmer 15s ease-in-out infinite alternate;
+	pointer-events: none;
 }
 
 a {
@@ -215,5 +235,16 @@ a:hover {
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% { 
+        background-position: 0% 0%;
+        filter: brightness(1);
+    }
+    100% { 
+        background-position: 100% 100%;
+        filter: brightness(1.2);
     }
 }
