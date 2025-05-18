@@ -388,6 +388,81 @@ body {
     animation-delay: calc(var(--animation-order) * 0.1s);
 }
 
+.periodic-table {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    gap: 4px;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.element {
+    position: relative;
+    aspect-ratio: 1;
+}
+
+/* Element positioning */
+.element:nth-child(1) { grid-column: 1; grid-row: 1; }  /* H */
+.element:nth-child(2) { grid-column: 18; grid-row: 1; } /* He */
+.element:nth-child(3) { grid-column: 1; grid-row: 2; }  /* Li */
+.element:nth-child(4) { grid-column: 2; grid-row: 2; }  /* Be */
+/* B to Ne (5-10) */
+.element:nth-child(n+5):nth-child(-n+10) { grid-column: n+12; grid-row: 2; }
+/* Na to Ar (11-18) */
+.element:nth-child(n+11):nth-child(-n+18) { grid-column: n-10; grid-row: 3; }
+/* K to Kr (19-36) */
+.element:nth-child(n+19):nth-child(-n+36) { grid-column: n-18; grid-row: 4; }
+/* Rb to Xe (37-54) */
+.element:nth-child(n+37):nth-child(-n+54) { grid-column: n-36; grid-row: 5; }
+/* Cs to Rn (55-86) */
+.element:nth-child(n+55):nth-child(-n+86) { grid-column: n-54; grid-row: 6; }
+/* Fr to Og (87-118) */
+.element:nth-child(n+87):nth-child(-n+118) { grid-column: n-86; grid-row: 7; }
+
+/* Lanthanides (57-71) */
+.element.lanthanoid { grid-row: 9; }
+/* Actinides (89-103) */
+.element.actinoid { grid-row: 10; }
+
+/* Empty space for f-block indicator */
+.periodic-table::before {
+    content: '';
+    grid-column: 3;
+    grid-row: 6;
+    width: 100%;
+    height: 100%;
+}
+
+/* Add arrows for f-block elements */
+.f-block-arrow {
+    grid-column: 3;
+    grid-row: 6 / span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    font-size: 1.5rem;
+}
+
+.element-name {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.element:hover .element-name {
+    display: block;
+}
+
 @media (max-width: 768px) {
     .periodic-table {
         grid-template-columns: repeat(9, 1fr);
