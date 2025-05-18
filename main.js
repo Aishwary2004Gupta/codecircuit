@@ -92,10 +92,17 @@ function initializeElements() {
         const symbol = element.querySelector('.symbol').textContent;
         const properties = elementProperties[symbol] || defaultProperties;
         
-        // Add property class to element
         element.classList.add(`property-${properties.type}`);
         
-        // Hover card functionality
+        // Add click handler for highlight
+        element.addEventListener('click', (e) => {
+            // Remove highlight from other elements
+            elements.forEach(el => el.classList.remove('element-highlighted'));
+            // Add highlight to clicked element
+            element.classList.add('element-highlighted');
+        });
+        
+        // Add hover card functionality
         element.addEventListener('mouseenter', (e) => {
             const hoverCard = createHoverCard(element, properties);
             document.body.appendChild(hoverCard);
@@ -114,6 +121,13 @@ function initializeElements() {
                 existingCard.remove();
             }
         });
+    });
+
+    // Add click handler to remove highlight when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.element')) {
+            elements.forEach(el => el.classList.remove('element-highlighted'));
+        }
     });
 
     // Search functionality
@@ -145,6 +159,18 @@ function initializeElements() {
         });
     });
 }
+
+// Add styles for highlight effect
+const styles = document.createElement('style');
+styles.textContent = `
+    .element-highlighted {
+        transform: scale(1.15) translateZ(30px) !important;
+        box-shadow: 0 0 30px rgba(255, 165, 0, 0.8) !important;
+        z-index: 1000 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+`;
+document.head.appendChild(styles);
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeElements);
