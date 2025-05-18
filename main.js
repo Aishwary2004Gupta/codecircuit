@@ -269,10 +269,20 @@ function initializeElements() {
 const styles = document.createElement('style');
 styles.textContent = `
     .element-highlighted {
-        transform: scale(1.15) translateZ(30px) !important;
-        box-shadow: 0 0 30px rgba(255, 165, 0, 0.8) !important;
+        transform: scale(1.2) translateZ(50px) !important;
+        background: linear-gradient(145deg, #ffd700, #ff8c00) !important;
+        border: 4px solid #ffd700 !important;
+        box-shadow: 
+            0 0 30px #ffd700,
+            0 15px 30px rgba(0, 0, 0, 0.4) !important;
         z-index: 1000 !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        animation: pulseGold 2s infinite !important;
+    }
+
+    @keyframes pulseGold {
+        0% { box-shadow: 0 0 30px #ffd700, 0 15px 30px rgba(0, 0, 0, 0.4); }
+        50% { box-shadow: 0 0 50px #ffd700, 0 15px 30px rgba(0, 0, 0, 0.4); }
+        100% { box-shadow: 0 0 30px #ffd700, 0 15px 30px rgba(0, 0, 0, 0.4); }
     }
 `;
 document.head.appendChild(styles);
