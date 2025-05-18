@@ -83,10 +83,120 @@ function createHoverCard(element, properties) {
 }
 
 function initializeElements() {
-    const searchInput = document.getElementById('searchElement');
     const propertyFilter = document.getElementById('propertyFilter');
     const elements = document.querySelectorAll('.element');
     
+    // Create search button and modal
+    const searchButton = document.createElement('button');
+    searchButton.innerHTML = '🔍';
+    searchButton.className = 'search-button';
+    document.body.appendChild(searchButton);
+
+    const searchModal = document.createElement('div');
+    searchModal.className = 'search-modal';
+    searchModal.innerHTML = `
+        <div class="search-container">
+            <input type="text" id="searchElement" placeholder="Search elements...">
+        </div>
+    `;
+    document.body.appendChild(searchModal);
+
+    // Add search styles
+    const searchStyles = document.createElement('style');
+    searchStyles.textContent = `
+        .search-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .search-button:hover {
+            transform: scale(1.1);
+            background: rgba(30, 41, 59, 1);
+        }
+
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            background: rgba(30, 41, 59, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-modal.active {
+            display: block;
+        }
+
+        #searchElement {
+            width: 300px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(20, 30, 45, 0.9);
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+    `;
+    document.head.appendChild(searchStyles);
+
+    // Add click handlers for search
+    searchButton.addEventListener('click', () => {
+        searchModal.classList.add('active');
+        searchModal.querySelector('#searchElement').focus();
+    });
+
+    // Close modal on escape or click outside
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            searchModal.classList.remove('active');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchModal.contains(e.target) && e.target !== searchButton) {
+            searchModal.classList.remove('active');
+        }
+    });
+
+    // Handle search input
+    const searchInput = searchModal.querySelector('#searchElement');
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        elements.forEach(element => {
+            const symbol = element.querySelector('.symbol').textContent;
+            const name = element.querySelector('.details').textContent.split('\n')[0];
+            const isVisible = symbol.toLowerCase().includes(searchTerm) || 
+                            name.toLowerCase().includes(searchTerm);
+            
+            element.style.opacity = isVisible ? '1' : '0.2';
+            element.style.pointerEvents = isVisible ? 'auto' : 'none';
+        });
+    });
+
     // Initialize element types and hover effects
     elements.forEach(element => {
         const symbol = element.querySelector('.symbol').textContent;
@@ -128,21 +238,6 @@ function initializeElements() {
         if (!e.target.closest('.element')) {
             elements.forEach(el => el.classList.remove('element-highlighted'));
         }
-    });
-
-    // Search functionality
-    searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        
-        elements.forEach(element => {
-            const symbol = element.querySelector('.symbol').textContent;
-            const name = element.querySelector('.details').textContent.split('\n')[0];
-            const isVisible = symbol.toLowerCase().includes(searchTerm) || 
-                            name.toLowerCase().includes(searchTerm);
-            
-            element.style.opacity = isVisible ? '1' : '0.2';
-            element.style.pointerEvents = isVisible ? 'auto' : 'none';
-        });
     });
 
     // Property filter functionality
