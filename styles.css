@@ -6,6 +6,7 @@ body {
 	font-size: 13px;
 	line-height: 24px;
 	overscroll-behavior: none;
+	overflow: hidden;
 }
 
 a {
@@ -15,4 +16,24 @@ a {
 
 a:hover {
 	text-decoration: underline;
+}
+
+.element-info {
+    position: absolute;
+    background: rgba(0,0,0,0.9);
+    border: 1px solid rgba(255,128,0,0.4);
+    padding: 15px;
+    border-radius: 8px;
+    display: none;
+    z-index: 1000;
+    max-width: 200px;
+}
+
+.property-metal { border-color: rgba(255,215,0,0.6); }
+.property-nonmetal { border-color: rgba(0,255,128,0.6); }
+.property-noble { border-color: rgba(128,0,255,0.6); }
+
+.filtered-out {
+    opacity: 0.3;
+    pointer-events: none;
 }
