@@ -251,19 +251,39 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Animate appearance
         if (animate) {
+            // Enhanced animation for new nodes
             nodeElement.style.opacity = '0';
             nodeElement.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            nodeElement.style.boxShadow = '0 0 20px rgba(0,0,0,0.3)';
             
             setTimeout(() => {
-                nodeElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                nodeElement.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 nodeElement.style.opacity = '1';
                 nodeElement.style.transform = 'translate(-50%, -50%) scale(1)';
+                nodeElement.style.boxShadow = '0 2px 8px var(--shadow-color)';
+                
+                // Add ripple effect
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple';
+                ripple.style.cssText = `
+                    position: absolute;
+                    border: 2px solid ${type === 'central' ? '#ff7675' : type === 'main' ? '#74b9ff' : '#a8e6cf'};
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 8px;
+                    animation: ripple 0.6s ease-out forwards;
+                `;
+                nodeElement.appendChild(ripple);
                 
                 setTimeout(() => {
+                    ripple.remove();
                     nodeElement.style.transition = '';
-                }, 300);
+                }, 600);
             }, 10);
         }
+        
+        // Add auto-expand functionality
+        autoExpandNode(node);
         
         return node;
     }
@@ -767,4 +787,41 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNodeCount();
         updateStatus('New node created');
     }
+    
+    // Add this new function for auto-expanding nodes
+    function autoExpandNode(node) {
+        const textarea = node.element.querySelector('.node-content');
+        const computeHeight = () => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+            
+            // Adjust node width based on content
+            const minWidth = 120;
+            const textWidth = textarea.value.length * 8;
+            node.element.style.width = Math.max(minWidth, textWidth) + 'px';
+            
+            // Update connections
+            connections.forEach(conn => {
+                if (conn.fromId == node.id || conn.toId == node.id) {
+                    updateConnectionElement(conn);
+                }
+            });
+        };
+        
+        textarea.addEventListener('input', computeHeight);
+        // Initial computation
+        computeHeight();
+    }
+    
+    // Add these CSS keyframes to your styles.css file:
+    // @keyframes ripple {
+    //     0% {
+    //         transform: scale(1);
+    //         opacity: 1;
+    //     }
+    //     100% {
+    //         transform: scale(1.5);
+    //         opacity: 0;
+    //     }
+    // }
 });
