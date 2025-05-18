@@ -2,21 +2,38 @@ const elementProperties = {
     // Metals (Groups 1-12 and parts of 13-16)
     'Li': { type: 'metal', category: 'Alkali Metal', state: 'Solid', block: 's', electronConfig: '[He] 2s¹' },
     'Na': { type: 'metal', category: 'Alkali Metal', state: 'Solid', block: 's', electronConfig: '[Ne] 3s¹' },
+    'K': { type: 'metal', category: 'Alkali Metal', state: 'Solid', block: 's', electronConfig: '[Ar] 4s¹' },
+    'Be': { type: 'metal', category: 'Alkaline Earth Metal', state: 'Solid', block: 's', electronConfig: '[He] 2s²' },
+    'Mg': { type: 'metal', category: 'Alkaline Earth Metal', state: 'Solid', block: 's', electronConfig: '[Ne] 3s²' },
+    'Ca': { type: 'metal', category: 'Alkaline Earth Metal', state: 'Solid', block: 's', electronConfig: '[Ar] 4s²' },
     'Fe': { type: 'metal', category: 'Transition Metal', state: 'Solid', block: 'd', electronConfig: '[Ar] 3d⁶ 4s²' },
+    'Cu': { type: 'metal', category: 'Transition Metal', state: 'Solid', block: 'd', electronConfig: '[Ar] 3d¹⁰ 4s¹' },
+    'Zn': { type: 'metal', category: 'Transition Metal', state: 'Solid', block: 'd', electronConfig: '[Ar] 3d¹⁰ 4s²' },
+    'Al': { type: 'metal', category: 'Post-Transition Metal', state: 'Solid', block: 'p', electronConfig: '[Ne] 3s² 3p¹' },
+    'Sn': { type: 'metal', category: 'Post-Transition Metal', state: 'Solid', block: 'p', electronConfig: '[Kr] 4d¹⁰ 5s² 5p²' },
+    'Pb': { type: 'metal', category: 'Post-Transition Metal', state: 'Solid', block: 'p', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²' },
     'Au': { type: 'metal', category: 'Transition Metal', state: 'Solid', block: 'd', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s¹' },
-    
-    // Non-metals (Parts of groups 13-16 and group 17)
+
+    // Non-metals (Groups 14-17)
     'H': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Gas', block: 's', electronConfig: '1s¹' },
     'C': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Solid', block: 'p', electronConfig: '[He] 2s² 2p²' },
     'N': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Gas', block: 'p', electronConfig: '[He] 2s² 2p³' },
     'O': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Gas', block: 'p', electronConfig: '[He] 2s² 2p⁴' },
-    
+    'F': { type: 'nonmetal', category: 'Halogen', state: 'Gas', block: 'p', electronConfig: '[He] 2s² 2p⁵' },
+    'P': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Solid', block: 'p', electronConfig: '[Ne] 3s² 3p³' },
+    'S': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Solid', block: 'p', electronConfig: '[Ne] 3s² 3p⁴' },
+    'Cl': { type: 'nonmetal', category: 'Halogen', state: 'Gas', block: 'p', electronConfig: '[Ne] 3s² 3p⁵' },
+    'I': { type: 'nonmetal', category: 'Halogen', state: 'Solid', block: 'p', electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁵' },
+
     // Noble Gases (Group 18)
     'He': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 's', electronConfig: '1s²' },
     'Ne': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[He] 2s² 2p⁶' },
     'Ar': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[Ne] 3s² 3p⁶' },
-    // Add more elements as needed...
+    'Kr': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁶' },
+    'Xe': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁶' },
+    'Rn': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶' },
 };
+
 
 // Default type for elements not explicitly defined
 const defaultProperties = {
