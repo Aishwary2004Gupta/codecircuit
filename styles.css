@@ -19,14 +19,27 @@ a:hover {
 }
 
 .element-info {
-    position: absolute;
-    background: rgba(0,0,0,0.9);
-    border: 1px solid rgba(255,128,0,0.4);
-    padding: 15px;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid rgba(255, 128, 0, 0.4);
     border-radius: 8px;
-    display: none;
+    padding: 15px;
+    max-width: 250px;
+    color: #fff;
     z-index: 1000;
-    max-width: 200px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.element-info h3 {
+    margin: 0 0 10px 0;
+    color: rgba(255, 128, 0, 0.8);
+}
+
+.element-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .property-metal { border-color: rgba(255,215,0,0.6); }
@@ -34,6 +47,7 @@ a:hover {
 .property-noble { border-color: rgba(128,0,255,0.6); }
 
 .filtered-out {
-    opacity: 0.3;
+    opacity: 0.2;
     pointer-events: none;
+    transition: opacity 0.3s ease;
 }
