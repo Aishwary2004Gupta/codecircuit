@@ -3,76 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindFlow - Beautiful Mind Mapping</title>
+    <title>Interactive Periodic Table</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
-        <nav class="toolbar">
-            <div class="logo">
-                <i class="fas fa-brain"></i>
-                <span>MindFlow</span>
-            </div>
-            <div class="tools">
-                <button id="new-map" class="btn" title="New Mind Map">
-                    <i class="fas fa-file"></i>
-                </button>
-                <button id="save-map" class="btn" title="Save Mind Map">
-                    <i class="fas fa-save"></i>
-                </button>
-                <button id="export-png" class="btn" title="Export as PNG">
-                    <i class="fas fa-download"></i>
-                </button>
-                <button id="toggle-theme" class="btn" title="Toggle Theme">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </nav>
+    <div class="parallax-wrapper">
+        <div class="app-container">
+            <nav class="toolbar glass-effect">
+                <div class="logo">
+                    <i class="fas fa-atom"></i>
+                    <span>Interactive Periodic Table</span>
+                </div>
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" id="search" placeholder="Search elements...">
+                    </div>
+                    <div class="filters">
+                        <select id="category-filter">
+                            <option value="all">All Categories</option>
+                            <option value="metal">Metals</option>
+                            <option value="nonmetal">Non-metals</option>
+                            <option value="noble-gas">Noble Gases</option>
+                            <option value="halogen">Halogens</option>
+                        </select>
+                        <select id="property-filter">
+                            <option value="atomic-mass">Atomic Mass</option>
+                            <option value="melting-point">Melting Point</option>
+                            <option value="boiling-point">Boiling Point</option>
+                        </select>
+                    </div>
+                    <button id="view-3d" class="btn">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
+                    <button id="toggle-theme" class="btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
 
-        <div class="sidebar">
-            <div class="node-types">
-                <div class="node-type" draggable="true" data-type="central">
-                    <div class="preview central"></div>
-                    <span>Central Idea</span>
-                </div>
-                <div class="node-type" draggable="true" data-type="main">
-                    <div class="preview main"></div>
-                    <span>Main Topic</span>
-                </div>
-                <div class="node-type" draggable="true" data-type="sub">
-                    <div class="preview sub"></div>
-                    <span>Subtopic</span>
+            <div class="periodic-table-container">
+                <div id="periodic-table" class="periodic-table"></div>
+            </div>
+
+            <div id="element-modal" class="modal">
+                <div class="modal-content glass-effect">
+                    <div class="element-3d-view">
+                        <canvas id="element-model"></canvas>
+                    </div>
+                    <div class="element-info">
+                        <h2 id="element-name"></h2>
+                        <div class="element-properties">
+                            <!-- Properties will be dynamically added here -->
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="style-controls">
-                <h3>Appearance</h3>
-                <div class="control-group">
-                    <label>Background:</label>
-                    <input type="color" id="bg-color" value="#ffffff">
-                </div>
-                <div class="control-group">
-                    <label>Connections:</label>
-                    <input type="color" id="conn-color" value="#666666">
-                </div>
-                <div class="control-group">
-                    <label>Line Width:</label>
-                    <input type="range" id="conn-width" min="1" max="10" value="2">
-                </div>
+
+            <div class="status-bar glass-effect">
+                <span id="selected-element">No element selected</span>
+                <span id="view-mode">2D View</span>
+                <span id="filter-status">No filters applied</span>
             </div>
-        </div>
-
-        <div class="canvas-container">
-            <div id="mindmap" class="mindmap"></div>
-        </div>
-
-        <div class="status-bar">
-            <span id="zoom-level">Zoom: 100%</span>
-            <span id="node-count">Nodes: 0</span>
-            <span id="status-message"></span>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
