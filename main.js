@@ -189,11 +189,21 @@ function initializeElements() {
         elements.forEach(element => {
             const symbol = element.querySelector('.symbol').textContent;
             const name = element.querySelector('.details').textContent.split('\n')[0];
-            const isVisible = symbol.toLowerCase().includes(searchTerm) || 
-                            name.toLowerCase().includes(searchTerm);
+            const properties = elementProperties[symbol] || defaultProperties;
             
-            element.style.opacity = isVisible ? '1' : '0.2';
-            element.style.pointerEvents = isVisible ? 'auto' : 'none';
+            // Search across all properties
+            const matchesSearch = [
+                symbol.toLowerCase(),                    // Symbol
+                name.toLowerCase(),                      // Name
+                properties.category.toLowerCase(),       // Category
+                properties.state.toLowerCase(),          // State
+                properties.block.toLowerCase(),          // Block
+                properties.electronConfig.toLowerCase(), // Electronic Configuration
+                properties.type.toLowerCase()            // Type (metal/nonmetal/noble)
+            ].some(text => text.includes(searchTerm));
+            
+            element.style.opacity = matchesSearch ? '1' : '0.2';
+            element.style.pointerEvents = matchesSearch ? 'auto' : 'none';
         });
     });
 
