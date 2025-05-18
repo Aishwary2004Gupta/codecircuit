@@ -401,33 +401,75 @@
 				controls.maxDistance = 6000;
 				controls.addEventListener( 'change', render );
 
-				const buttonTable = document.getElementById( 'table' );
-				buttonTable.addEventListener( 'click', function () {
+				// Update button event listeners
+				const buttonTable = document.getElementById('table');
+				buttonTable.addEventListener('click', function() {
+					// Reset positions first
+					objects.forEach(obj => {
+						obj.position.set(
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000
+						);
+						obj.rotation.set(0, 0, 0);
+					});
+					
+					// Reset camera and controls
+					camera.position.set(0, 0, 3000);
+					camera.rotation.set(0, 0, 0);
+					controls.reset();
+					
+					// Wait a moment before transforming
+					setTimeout(() => transform(targets.table, 2000), 500);
+				});
 
-					transform( targets.table, 2000 );
+				const buttonSphere = document.getElementById('sphere');
+				buttonSphere.addEventListener('click', function() {
+					objects.forEach(obj => {
+						obj.position.set(
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000
+						);
+						obj.rotation.set(0, 0, 0);
+					});
+					camera.position.set(0, 0, 3000);
+					camera.rotation.set(0, 0, 0);
+					controls.reset();
+					setTimeout(() => transform(targets.sphere, 2000), 500);
+				});
 
-				} );
+				const buttonHelix = document.getElementById('helix');
+				buttonHelix.addEventListener('click', function() {
+					objects.forEach(obj => {
+						obj.position.set(
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000
+						);
+						obj.rotation.set(0, 0, 0);
+					});
+					camera.position.set(0, 0, 3000);
+					camera.rotation.set(0, 0, 0);
+					controls.reset();
+					setTimeout(() => transform(targets.helix, 2000), 500);
+				});
 
-				const buttonSphere = document.getElementById( 'sphere' );
-				buttonSphere.addEventListener( 'click', function () {
-
-					transform( targets.sphere, 2000 );
-
-				} );
-
-				const buttonHelix = document.getElementById( 'helix' );
-				buttonHelix.addEventListener( 'click', function () {
-
-					transform( targets.helix, 2000 );
-
-				} );
-
-				const buttonGrid = document.getElementById( 'grid' );
-				buttonGrid.addEventListener( 'click', function () {
-
-					transform( targets.grid, 2000 );
-
-				} );
+				const buttonGrid = document.getElementById('grid');
+				buttonGrid.addEventListener('click', function() {
+					objects.forEach(obj => {
+						obj.position.set(
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000,
+							Math.random() * 4000 - 2000
+						);
+						obj.rotation.set(0, 0, 0);
+					});
+					camera.position.set(0, 0, 3000);
+					camera.rotation.set(0, 0, 0);
+					controls.reset();
+					setTimeout(() => transform(targets.grid, 2000), 500);
+				});
 
 				transform( targets.table, 2000 );
 
@@ -436,6 +478,45 @@
 				window.addEventListener( 'resize', onWindowResize );
 
 			}
+
+			function resetAndTransform(targetName) {
+    // First reset everything
+    TWEEN.removeAll();
+    
+    // Reset camera
+    camera.position.set(0, 0, 3000);
+    camera.rotation.set(0, 0, 0);
+    controls.target.set(0, 0, 0);
+    controls.reset();
+    
+    // Scatter objects randomly first
+    const duration = 1000;
+    const promises = objects.map(object => {
+        return new Promise(resolve => {
+            // Random position
+            new TWEEN.Tween(object.position)
+                .to({
+                    x: Math.random() * 4000 - 2000,
+                    y: Math.random() * 4000 - 2000,
+                    z: Math.random() * 4000 - 2000
+                }, duration)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .start();
+
+            // Reset rotation
+            new TWEEN.Tween(object.rotation)
+                .to({ x: 0, y: 0, z: 0 }, duration)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .onComplete(resolve)
+                .start();
+        });
+    });
+
+    // After reset complete, transform to target
+    Promise.all(promises).then(() => {
+        transform(targets[targetName], 2000);
+    });
+}
 
 			function transform( targets, duration ) {
 
@@ -447,12 +528,12 @@
 					const target = targets[ i ];
 
 					new TWEEN.Tween( object.position )
-						.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+						.to( { x: target.position.x, y: target.position.y, z: target.position.z }, duration )
 						.easing( TWEEN.Easing.Exponential.InOut )
 						.start();
 
 					new TWEEN.Tween( object.rotation )
-						.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+						.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, duration )
 						.easing( TWEEN.Easing.Exponential.InOut )
 						.start();
 
