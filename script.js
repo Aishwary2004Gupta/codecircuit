@@ -970,36 +970,68 @@ document.addEventListener('DOMContentLoaded', function() {
     function createPeriodicTable() {
         const table = document.getElementById('periodic-table');
         
-        // Add f-block arrows
-        const fBlockArrow1 = document.createElement('div');
-        fBlockArrow1.className = 'f-block-arrow';
-        fBlockArrow1.innerHTML = '↓';
-        table.appendChild(fBlockArrow1);
+        // Create group numbers
+        const groupNumbers = document.createElement('div');
+        groupNumbers.className = 'group-numbers';
+        for(let i = 1; i <= 18; i++) {
+            const group = document.createElement('div');
+            group.textContent = i;
+            groupNumbers.appendChild(group);
+        }
+        table.appendChild(groupNumbers);
         
-        elements.forEach((element, index) => {
+        // Create period numbers
+        const periodNumbers = document.createElement('div');
+        periodNumbers.className = 'period-numbers';
+        for(let i = 1; i <= 7; i++) {
+            const period = document.createElement('div');
+            period.textContent = i;
+            periodNumbers.appendChild(period);
+        }
+        table.appendChild(periodNumbers);
+        
+        // Create lanthanide and actinide blocks
+        const lanthanoidBlock = document.createElement('div');
+        lanthanoidBlock.className = 'lanthanoid-block';
+        const actinoidBlock = document.createElement('div');
+        actinoidBlock.className = 'actinoid-block';
+        
+        // Create spacer for f-block elements
+        const fBlockSpacer = document.createElement('div');
+        fBlockSpacer.className = 'f-block-spacer';
+        fBlockSpacer.textContent = '← f-block elements →';
+        table.appendChild(fBlockSpacer);
+
+        elements.forEach((element) => {
             const elementDiv = document.createElement('div');
             elementDiv.className = `element ${element.category}`;
-            elementDiv.dataset.index = index;
+            elementDiv.dataset.number = element.number;
             
             elementDiv.innerHTML = `
                 <div class="element-number">${element.number}</div>
                 <div class="element-symbol">${element.symbol}</div>
-                <div class="element-mass">${element.mass.toFixed(2)}</div>
+                <div class="element-mass">${element.mass.toFixed(1)}</div>
                 <div class="element-name">${element.name}</div>
             `;
             
-            // Position lanthanides and actinides in their special rows
-            if (element.category === 'lanthanoid') {
-                elementDiv.style.gridColumn = `${element.number - 56}`; // Start after La
-                elementDiv.style.gridRow = '9';
-            } else if (element.category === 'actinoid') {
-                elementDiv.style.gridColumn = `${element.number - 88}`; // Start after Ac
-                elementDiv.style.gridRow = '10';
-            }
-            
             elementDiv.addEventListener('click', () => showElementDetails(element));
-            table.appendChild(elementDiv);
+            
+            // Position elements
+            if (element.category === 'lanthanoid') {
+                lanthanoidBlock.appendChild(elementDiv);
+            } else if (element.category === 'actinoid') {
+                actinoidBlock.appendChild(elementDiv);
+            } else {
+                table.appendChild(elementDiv);
+                // Set grid position based on periodic table layout
+                const period = Math.ceil(element.number / 18);
+                elementDiv.style.gridRow = period;
+            }
         });
+        
+        // Append lanthanide and actinide blocks
+        table.appendChild(lanthanoidBlock);
+        table.appendChild(actinoidBlock);
     }
     
     function showElementDetails(element) {

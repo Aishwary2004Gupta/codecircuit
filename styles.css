@@ -390,79 +390,83 @@ body {
 
 .periodic-table {
     display: grid;
-    grid-template-columns: repeat(18, 1fr);
+    grid-template-columns: repeat(18, minmax(70px, 1fr));
     gap: 4px;
-    max-width: 1800px;
-    margin: 0 auto;
     padding: 20px;
+    position: relative;
 }
 
-.element {
-    position: relative;
-    aspect-ratio: 1;
+/* Group numbers at the top */
+.group-numbers {
+    display: grid;
+    grid-template-columns: repeat(18, minmax(70px, 1fr));
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+/* Period numbers on the left */
+.period-numbers {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    display: grid;
+    grid-template-rows: repeat(7, 1fr);
+    gap: 4px;
 }
 
 /* Element positioning */
-.element:nth-child(1) { grid-column: 1; grid-row: 1; }  /* H */
-.element:nth-child(2) { grid-column: 18; grid-row: 1; } /* He */
-.element:nth-child(3) { grid-column: 1; grid-row: 2; }  /* Li */
-.element:nth-child(4) { grid-column: 2; grid-row: 2; }  /* Be */
-/* B to Ne (5-10) */
-.element:nth-child(n+5):nth-child(-n+10) { grid-column: n+12; grid-row: 2; }
-/* Na to Ar (11-18) */
-.element:nth-child(n+11):nth-child(-n+18) { grid-column: n-10; grid-row: 3; }
-/* K to Kr (19-36) */
-.element:nth-child(n+19):nth-child(-n+36) { grid-column: n-18; grid-row: 4; }
-/* Rb to Xe (37-54) */
-.element:nth-child(n+37):nth-child(-n+54) { grid-column: n-36; grid-row: 5; }
-/* Cs to Rn (55-86) */
-.element:nth-child(n+55):nth-child(-n+86) { grid-column: n-54; grid-row: 6; }
-/* Fr to Og (87-118) */
-.element:nth-child(n+87):nth-child(-n+118) { grid-column: n-86; grid-row: 7; }
-
-/* Lanthanides (57-71) */
-.element.lanthanoid { grid-row: 9; }
-/* Actinides (89-103) */
-.element.actinoid { grid-row: 10; }
-
-/* Empty space for f-block indicator */
-.periodic-table::before {
-    content: '';
-    grid-column: 3;
-    grid-row: 6;
-    width: 100%;
-    height: 100%;
+.element {
+    aspect-ratio: 1;
+    padding: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
 }
 
-/* Add arrows for f-block elements */
-.f-block-arrow {
-    grid-column: 3;
-    grid-row: 6 / span 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Empty slots */
+.element-spacer {
+    grid-column: span 1;
+}
+
+/* Lanthanides and Actinides spacing */
+.f-block-spacer {
+    grid-column: 3 / span 10;
+    grid-row: 6 / span 1;
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
     color: var(--text-color);
-    font-size: 1.5rem;
 }
 
-.element-name {
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-    z-index: 10;
+/* Specific grid positions */
+.element[data-group="1"] { grid-column: 1; }
+.element[data-group="2"] { grid-column: 2; }
+.element[data-group="13"] { grid-column: 13; }
+.element[data-group="14"] { grid-column: 14; }
+.element[data-group="15"] { grid-column: 15; }
+.element[data-group="16"] { grid-column: 16; }
+.element[data-group="17"] { grid-column: 17; }
+.element[data-group="18"] { grid-column: 18; }
+
+/* Lanthanides and Actinides */
+.lanthanoid-block {
+    grid-row: 8;
+    grid-column: 3 / span 15;
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 4px;
+    margin-top: 20px;
 }
 
-.element:hover .element-name {
-    display: block;
+.actinoid-block {
+    grid-row: 9;
+    grid-column: 3 / span 15;
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 4px;
+    margin-top: 4px;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
     .periodic-table {
         grid-template-columns: repeat(9, 1fr);
