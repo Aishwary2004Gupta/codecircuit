@@ -754,4 +754,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const type = e.dataTransfer.getData('text/plain');
         if (!type) return;
         
-        const x =
+        const x = (e.clientX - offsetX) / scale;
+        const y = (e.clientY - offsetY) / scale;
+        
+        const node = createNode('New Node', type, x, y);
+        
+        // Auto-focus the new node's textarea
+        const textarea = node.element.querySelector('.node-content');
+        textarea.focus();
+        textarea.select();
+        
+        updateNodeCount();
+        updateStatus('New node created');
+    }
+});
