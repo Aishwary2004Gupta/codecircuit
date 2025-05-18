@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMapper Pro | Auto-Expanding Mind Maps</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>MindMapper <span>Pro</span></h1>
+            </div>
+            <nav class="toolbar">
+                <button id="new-map" class="tool-button" title="New Mind Map">
+                    <i class="fas fa-file"></i>
+                </button>
+                <button id="save-map" class="tool-button" title="Save">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button id="export-png" class="tool-button" title="Export as PNG">
+                    <i class="fas fa-image"></i>
+                </button>
+                <button id="toggle-theme" class="tool-button" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Nodes</h3>
+                    <div class="node-palette">
+                        <div class="node-type" draggable="true" data-type="central">
+                            <div class="node-preview central-node"></div>
+                            <span>Central Idea</span>
+                        </div>
+                        <div class="node-type" draggable="true" data-type="main">
+                            <div class="node-preview main-node"></div>
+                            <span>Main Topic</span>
+                        </div>
+                        <div class="node-type" draggable="true" data-type="sub">
+                            <div class="node-preview sub-node"></div>
+                            <span>Sub Topic</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <h3>Styles</h3>
+                    <div class="style-options">
+                        <label>Background Color
+                            <input type="color" id="bg-color" value="#f8f9fa">
+                        </label>
+                        <label>Connection Color
+                            <input type="color" id="conn-color" value="#6c757d">
+                        </label>
+                        <label>Connection Width
+                            <input type="range" id="conn-width" min="1" max="5" value="2">
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="mindmap-container">
+                <div id="mindmap" class="mindmap-surface"></div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span id="zoom-level">Zoom: 100%</span>
+            <span id="node-count">Nodes: 0</span>
+            <span id="status-message">Ready</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
