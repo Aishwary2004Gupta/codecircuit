@@ -49,12 +49,12 @@ function createHoverCard(element, properties) {
     card.className = 'element-hover-card';
     
     const symbol = element.querySelector('.symbol').textContent;
-    const name = element.querySelector('.details').textContent.split('\n')[0];
-    const mass = element.querySelector('.details').textContent.split('\n')[1];
+    const details = element.querySelector('.details').textContent;
+    const mass = element.querySelector('.atomic-mass')?.textContent || details.split('\n')[1] || '';
     
     card.innerHTML = `
         <h2>${symbol}</h2>
-        <h3>${name}</h3>
+        <h3>${details}</h3>
         <div class="property-grid">
             <div class="property">
                 <label>Atomic Mass:</label>
