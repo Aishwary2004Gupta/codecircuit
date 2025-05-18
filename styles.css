@@ -259,7 +259,7 @@ a:hover {
     z-index: 1000 !important;
     animation: pulseGold 2s infinite;
 }
-
+ 
 .element-highlighted.property-nonmetal {
     transform: scale(1.15) translateZ(30px) !important;
     background: linear-gradient(145deg, #00ff7f, #228b22) !important;
