@@ -7,7 +7,7 @@
 		<link type="text/css" rel="stylesheet" href="styles.css">
 		<style>
 			body {
-				background-color: #1a1a1a;
+				background: linear-gradient(to bottom right, #0f172a, #1e293b);
 				color: #ffffff;
 				font-family: 'Arial', sans-serif;
 			}
@@ -30,9 +30,12 @@
 				top: 20px;
 				left: 20px;
 				z-index: 100;
-				background: rgba(0,0,0,0.7);
-				padding: 15px;
-				border-radius: 8px;
+				background: rgba(15, 23, 42, 0.8);
+				padding: 20px;
+				border-radius: 12px;
+				backdrop-filter: blur(10px);
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 			}
 
 			.element {
@@ -112,13 +115,63 @@
 			}
 
 			select, input {
-				background: rgba(255,128,0,0.2);
-				border: 1px solid rgba(255,128,0,0.4);
+				background: rgba(30, 41, 59, 0.8);
+				border: 1px solid rgba(148, 163, 184, 0.2);
 				color: #ffffff;
-				padding: 5px;
+				padding: 8px 12px;
 				margin: 5px;
-				border-radius: 4px;
+				border-radius: 6px;
+				font-size: 14px;
+				transition: all 0.3s ease;
 			}
+
+			select:hover, input:hover {
+				background: rgba(51, 65, 85, 0.8);
+				border-color: rgba(148, 163, 184, 0.4);
+			}
+
+			select:focus, input:focus {
+				outline: none;
+				background: rgba(51, 65, 85, 0.9);
+				border-color: rgba(148, 163, 184, 0.6);
+				box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2);
+			}
+
+			input::placeholder {
+				color: rgba(148, 163, 184, 0.6);
+			}
+
+    body {
+        opacity: 0;
+        background: radial-gradient(circle at center, #1a2942 0%, #0f172a 100%);
+    }
+
+    .element {
+        opacity: 0.95;
+        transform: translateZ(0);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .element:hover {
+        opacity: 1;
+        transform: scale(1.15) translateZ(30px);
+    }
+
+    .element .details {
+        font-size: 12px;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    .atomic-mass {
+        position: absolute;
+        bottom: 35px;
+        width: 100%;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        font-weight: 500;
+    }
 		</style>
 	</head>
 	<body>
@@ -294,61 +347,54 @@
 				scene = new THREE.Scene();
 
 				// table
-
-				for ( let i = 0; i < table.length; i += 5 ) {
-
-					const element = document.createElement( 'div' );
+				for (let i = 0; i < table.length; i += 5) {
+					const element = document.createElement('div');
 					element.className = 'element';
 					
-					// Calculate gradient based on element type
 					const elementSymbol = table[i];
-					let gradient;
+					const elementName = table[i + 1];
+					const atomicMass = table[i + 2];
 					
-					if (['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn'].includes(elementSymbol)) {
-						// Noble gases - Purple gradient
-						gradient = `linear-gradient(135deg, rgba(147, 51, 234, 0.7), rgba(79, 70, 229, 0.7))`;
-					} else if (['H', 'C', 'N', 'O', 'F', 'Cl', 'Br', 'I'].includes(elementSymbol)) {
-						// Non-metals - Green gradient
-						gradient = `linear-gradient(135deg, rgba(16, 185, 129, 0.7), rgba(5, 150, 105, 0.7))`;
-					} else {
-						// Metals - Orange/Gold gradient
-						gradient = `linear-gradient(135deg, rgba(245, 158, 11, 0.7), rgba(217, 119, 6, 0.7))`;
-					}
-					
-					element.style.background = gradient;
-					element.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px rgba(255, 255, 255, 0.3)';
-
-					const number = document.createElement( 'div' );
+					// Add number (atomic number)
+					const number = document.createElement('div');
 					number.className = 'number';
-					number.textContent = ( i / 5 ) + 1;
-					element.appendChild( number );
+					number.textContent = (i / 5) + 1;
+					element.appendChild(number);
 
-					const symbol = document.createElement( 'div' );
+					// Add symbol
+					const symbol = document.createElement('div');
 					symbol.className = 'symbol';
-					symbol.textContent = table[ i ];
-					element.appendChild( symbol );
+					symbol.textContent = elementSymbol;
+					element.appendChild(symbol);
 
-					const details = document.createElement( 'div' );
+					// Add details - only element name and remove atomic mass from name
+					const details = document.createElement('div');
 					details.className = 'details';
-					details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
-					element.appendChild( details );
+					details.innerHTML = elementName; // Only show element name here
+					element.appendChild(details);
 
-					const objectCSS = new CSS3DObject( element );
+					// Add atomic mass as a separate div
+					const mass = document.createElement('div');
+					mass.className = 'atomic-mass';
+					mass.textContent = atomicMass;
+					element.appendChild(mass);
+
+					// Add initial transform for load animation
+					const objectCSS = new CSS3DObject(element);
 					objectCSS.position.x = Math.random() * 4000 - 2000;
 					objectCSS.position.y = Math.random() * 4000 - 2000;
-					objectCSS.position.z = Math.random() * 4000 - 2000;
-					scene.add( objectCSS );
+					objectCSS.position.z = 4000;
+					objectCSS.rotation.x = Math.random() * 2 - 1;
+					objectCSS.rotation.y = Math.random() * 2 - 1;
+					objectCSS.rotation.z = Math.random() * 2 - 1;
+					scene.add(objectCSS);
+					objects.push(objectCSS);
 
-					objects.push( objectCSS );
-
-					//
-
+					// Create target
 					const object = new THREE.Object3D();
-					object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
-					object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
-
-					targets.table.push( object );
-
+					object.position.x = (table[i + 3] * 140) - 1330;
+					object.position.y = -(table[i + 4] * 180) + 990;
+					targets.table.push(object);
 				}
 
 				// sphere
@@ -489,6 +535,32 @@
 					controls.reset();
 					setTimeout(() => transform(targets.grid, 2000), 500);
 				});
+
+				// Initial animation
+				objects.forEach((obj, i) => {
+					new TWEEN.Tween(obj.position)
+						.to({ 
+							x: targets.table[i].position.x,
+							y: targets.table[i].position.y,
+							z: 0 
+						}, 2500)
+						.easing(TWEEN.Easing.Exponential.InOut)
+						.delay(Math.random() * 1000)
+						.start();
+
+					new TWEEN.Tween(obj.rotation)
+						.to({ x: 0, y: 0, z: 0 }, 2500)
+						.easing(TWEEN.Easing.Exponential.InOut)
+						.delay(Math.random() * 1000)
+						.start();
+				});
+
+				// Add fade-in effect to body
+				document.body.style.opacity = '0';
+				document.body.style.transition = 'opacity 1s ease-in';
+				setTimeout(() => {
+					document.body.style.opacity = '1';
+				}, 100);
 
 				transform( targets.table, 2000 );
 
