@@ -825,3 +825,169 @@ document.addEventListener('DOMContentLoaded', function() {
     //     }
     // }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Three.js scene
+    let scene, camera, renderer, element3D;
+    
+    function init3DScene() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('element-model'), alpha: true });
+        renderer.setSize(400, 400);
+        
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(ambientLight, pointLight);
+        
+        camera.position.z = 5;
+    }
+    
+    // Periodic Table Data
+    const elements = [
+        { number: 1, symbol: 'H', name: 'Hydrogen', mass: 1.008, category: 'nonmetal' },
+        { number: 2, symbol: 'He', name: 'Helium', mass: 4.003, category: 'noble-gas' },
+        // Add more elements...
+    ];
+    
+    function createPeriodicTable() {
+        const table = document.getElementById('periodic-table');
+        elements.forEach((element, index) => {
+            const elementDiv = document.createElement('div');
+            elementDiv.className = `element ${element.category}`;
+            elementDiv.style.setProperty('--animation-order', index);
+            
+            elementDiv.innerHTML = `
+                <div class="element-number">${element.number}</div>
+                <div class="element-symbol">${element.symbol}</div>
+                <div class="element-mass">${element.mass}</div>
+            `;
+            
+            elementDiv.addEventListener('click', () => showElementDetails(element));
+            table.appendChild(elementDiv);
+        });
+    }
+    
+    function showElementDetails(element) {
+        const modal = document.getElementById('element-modal');
+        const elementName = document.getElementById('element-name');
+        const elementProperties = document.querySelector('.element-properties');
+        
+        elementName.textContent = `${element.name} (${element.symbol})`;
+        elementProperties.innerHTML = `
+            <p>Atomic Number: ${element.number}</p>
+            <p>Atomic Mass: ${element.mass}</p>
+            <p>Category: ${element.category}</p>
+        `;
+        
+        update3DModel(element);
+        modal.style.display = 'flex';
+    }
+    
+    function update3DModel(element) {
+        if (element3D) scene.remove(element3D);
+        
+        // Create 3D representation of the atom
+        const geometry = new THREE.SphereGeometry(2, 32, 32);
+        const material = new THREE.MeshPhongMaterial({
+            color: getElementColor(element.category),
+            metalness: 0.5,
+            roughness: 0.5,
+        });
+        
+        element3D = new THREE.Mesh(geometry, material);
+        scene.add(element3D);
+        
+        // Add electron shells
+        const electronShells = createElectronShells(element.number);
+        electronShells.forEach(shell => scene.add(shell));
+        
+        animate();
+    }
+    
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        if (element3D) {
+            element3D.rotation.x += 0.01;
+            element3D.rotation.y += 0.01;
+        }
+        
+        renderer.render(scene, camera);
+    }
+    
+    function createElectronShells(atomicNumber) {
+        // Simplified electron shell creation
+        const shells = [];
+        let remainingElectrons = atomicNumber;
+        let shellIndex = 1;
+        
+        while (remainingElectrons > 0) {
+            const shellCapacity = 2 * shellIndex * shellIndex;
+            const electrons = Math.min(remainingElectrons, shellCapacity);
+            
+            const shellGeometry = new THREE.TorusGeometry(shellIndex * 0.5, 0.02, 16, 100);
+            const shellMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 });
+            const shell = new THREE.Mesh(shellGeometry, shellMaterial);
+            
+            shell.rotation.x = Math.random() * Math.PI;
+            shell.rotation.y = Math.random() * Math.PI;
+            shells.push(shell);
+            
+            remainingElectrons -= electrons;
+            shellIndex++;
+        }
+        
+        return shells;
+    }
+    
+    function getElementColor(category) {
+        const colors = {
+            'metal': 0x94a3b8,
+            'nonmetal': 0x22c55e,
+            'noble-gas': 0xec4899,
+            'halogen': 0xf59e0b
+        };
+        return colors[category] || 0xffffff;
+    }
+    
+    // Event Listeners
+    document.getElementById('search').addEventListener('input', filterElements);
+    document.getElementById('category-filter').addEventListener('change', filterElements);
+    document.getElementById('property-filter').addEventListener('change', sortElements);
+    
+    function filterElements() {
+        const searchTerm = document.getElementById('search').value.toLowerCase();
+        const category = document.getElementById('category-filter').value;
+        
+        document.querySelectorAll('.element').forEach(elementDiv => {
+            const element = elements[parseInt(elementDiv.dataset.index)];
+            const matchesSearch = element.name.toLowerCase().includes(searchTerm) ||
+                                element.symbol.toLowerCase().includes(searchTerm);
+            const matchesCategory = category === 'all' || element.category === category;
+            
+            elementDiv.style.display = matchesSearch && matchesCategory ? 'block' : 'none';
+        });
+    }
+    
+    function sortElements() {
+        const property = document.getElementById('property-filter').value;
+        const elementArray = Array.from(document.querySelectorAll('.element'));
+        
+        elementArray.sort((a, b) => {
+            const elementA = elements[parseInt(a.dataset.index)];
+            const elementB = elements[parseInt(b.dataset.index)];
+            return elementA[property] - elementB[property];
+        });
+        
+        elementArray.forEach(element => {
+            element.parentNode.appendChild(element);
+        });
+    }
+    
+    // Initialize
+    init3DScene();
+    createPeriodicTable();
+});
