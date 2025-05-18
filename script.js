@@ -969,16 +969,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function createPeriodicTable() {
         const table = document.getElementById('periodic-table');
+        
+        // Add f-block arrows
+        const fBlockArrow1 = document.createElement('div');
+        fBlockArrow1.className = 'f-block-arrow';
+        fBlockArrow1.innerHTML = '↓';
+        table.appendChild(fBlockArrow1);
+        
         elements.forEach((element, index) => {
             const elementDiv = document.createElement('div');
             elementDiv.className = `element ${element.category}`;
-            elementDiv.style.setProperty('--animation-order', index);
+            elementDiv.dataset.index = index;
             
             elementDiv.innerHTML = `
                 <div class="element-number">${element.number}</div>
                 <div class="element-symbol">${element.symbol}</div>
-                <div class="element-mass">${element.mass}</div>
+                <div class="element-mass">${element.mass.toFixed(2)}</div>
+                <div class="element-name">${element.name}</div>
             `;
+            
+            // Position lanthanides and actinides in their special rows
+            if (element.category === 'lanthanoid') {
+                elementDiv.style.gridColumn = `${element.number - 56}`; // Start after La
+                elementDiv.style.gridRow = '9';
+            } else if (element.category === 'actinoid') {
+                elementDiv.style.gridColumn = `${element.number - 88}`; // Start after Ac
+                elementDiv.style.gridRow = '10';
+            }
             
             elementDiv.addEventListener('click', () => showElementDetails(element));
             table.appendChild(elementDiv);
