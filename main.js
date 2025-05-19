@@ -82,6 +82,87 @@ function createHoverCard(element, properties) {
     return card;
 }
 
+function createLoadingScreen() {
+    const loader = document.createElement('div');
+    loader.className = 'loading-screen';
+    loader.innerHTML = `
+        <div class="loader-container">
+            <div class="atom-loader">
+                <div class="electron"></div>
+                <div class="electron"></div>
+                <div class="electron"></div>
+            </div>
+            <div class="loading-text">Loading Periodic Table...</div>
+        </div>
+    `;
+    document.body.appendChild(loader);
+
+    const loaderStyles = document.createElement('style');
+    loaderStyles.textContent = `
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0f1d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-container {
+            text-align: center;
+        }
+
+        .atom-loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin: 0 auto 20px;
+        }
+
+        .electron {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #4a90e2;
+            animation: rotate 2s linear infinite;
+        }
+
+        .electron:nth-child(1) { animation-delay: -0.5s; }
+        .electron:nth-child(2) { 
+            animation-delay: -1s;
+            border-color: #7c4dff;
+        }
+        .electron:nth-child(3) { 
+            animation-delay: -1.5s;
+            border-color: #00ff95;
+        }
+
+        .loading-text {
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            letter-spacing: 2px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotateX(60deg) rotateY(45deg) rotateZ(0); }
+            to { transform: rotateX(60deg) rotateY(45deg) rotateZ(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(loaderStyles);
+}
+
 function initializeElements() {
     const propertyFilter = document.getElementById('propertyFilter');
     const elements = document.querySelectorAll('.element');
@@ -288,4 +369,28 @@ styles.textContent = `
 document.head.appendChild(styles);
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeElements);
+document.addEventListener('DOMContentLoaded', () => {
+    createLoadingScreen();
+    
+    // Start loading assets and initialization in the background
+    Promise.all([
+        new Promise(resolve => {
+            initializeElements();
+            resolve();
+        }),
+        // Minimum loading time for animation
+        new Promise(resolve => setTimeout(resolve, 2000))
+    ]).then(() => {
+        // Remove loading screen with fade out
+        const loader = document.querySelector('.loading-screen');
+        if (loader) {
+            loader.style.transition = 'opacity 0.5s ease-out';
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.remove();
+                // Trigger initial animation
+                transform(targets.table, 2000);
+            }, 500);
+        }
+    });
+});
