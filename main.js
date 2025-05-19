@@ -88,11 +88,13 @@ function createLoadingScreen() {
     loader.innerHTML = `
         <div class="loader-container">
             <div class="atom-loader">
+                <div class="nucleus"></div>
                 <div class="electron"></div>
                 <div class="electron"></div>
                 <div class="electron"></div>
             </div>
             <div class="loading-text">Loading Periodic Table...</div>
+            <div class="loading-progress">0%</div>
         </div>
     `;
     document.body.appendChild(loader);
@@ -105,7 +107,7 @@ function createLoadingScreen() {
             left: 0;
             width: 100%;
             height: 100%;
-            background: #0a0f1d;
+            background: radial-gradient(circle at center, #1a1f35 0%, #0a0f1d 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -114,13 +116,28 @@ function createLoadingScreen() {
 
         .loader-container {
             text-align: center;
+            transform: scale(1.2);
         }
 
         .atom-loader {
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
             position: relative;
-            margin: 0 auto 20px;
+            margin: 0 auto 30px;
+            perspective: 800px;
+        }
+
+        .nucleus {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px #ff6b6b;
+            animation: pulseNucleus 2s ease-in-out infinite;
         }
 
         .electron {
@@ -128,39 +145,72 @@ function createLoadingScreen() {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 2px solid #4a90e2;
-            animation: rotate 2s linear infinite;
+            border: 2px solid transparent;
+            border-left: 2px solid #4a90e2;
+            border-right: 2px solid #4a90e2;
+            animation: rotate 3s linear infinite;
         }
 
-        .electron:nth-child(1) { animation-delay: -0.5s; }
         .electron:nth-child(2) { 
             animation-delay: -1s;
-            border-color: #7c4dff;
+            border-color: transparent #7c4dff #7c4dff transparent;
+            transform: rotate(60deg);
         }
         .electron:nth-child(3) { 
-            animation-delay: -1.5s;
-            border-color: #00ff95;
+            animation-delay: -2s;
+            border-color: transparent #00ff95 #00ff95 transparent;
+            transform: rotate(-60deg);
+        }
+        .electron:nth-child(4) {
+            animation-delay: -3s;
+            border-color: transparent #ff9f43 #ff9f43 transparent;
+            transform: rotate(30deg);
         }
 
         .loading-text {
             color: white;
             font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .loading-progress {
+            color: #4a90e2;
+            font-family: 'Poppins', sans-serif;
             font-size: 18px;
-            letter-spacing: 2px;
-            animation: pulse 1.5s ease-in-out infinite;
+            font-weight: bold;
         }
 
         @keyframes rotate {
-            from { transform: rotateX(60deg) rotateY(45deg) rotateZ(0); }
-            to { transform: rotateX(60deg) rotateY(45deg) rotateZ(360deg); }
+            from { transform: rotateX(65deg) rotateY(45deg) rotateZ(0); }
+            to { transform: rotateX(65deg) rotateY(45deg) rotateZ(360deg); }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        @keyframes pulseNucleus {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+            50% { text-shadow: 0 0 20px rgba(255,255,255,0.8); }
         }
     `;
     document.head.appendChild(loaderStyles);
+
+    // Simulate loading progress
+    let progress = 0;
+    const progressText = loader.querySelector('.loading-progress');
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        progressText.textContent = `${Math.round(progress)}%`;
+        if (progress === 100) clearInterval(progressInterval);
+    }, 200);
+
+    return { loader, progressInterval };
 }
 
 function initializeElements() {
@@ -493,7 +543,7 @@ function initParticles() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    createLoadingScreen();
+    const { loader, progressInterval } = createLoadingScreen();
     
     // Start loading assets and initialization in the background
     Promise.all([
@@ -504,17 +554,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Minimum loading time for animation
         new Promise(resolve => setTimeout(resolve, 2000))
     ]).then(() => {
-        // Remove loading screen with fade out
-        const loader = document.querySelector('.loading-screen');
-        if (loader) {
-            loader.style.transition = 'opacity 0.5s ease-out';
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.remove();
-                // Trigger initial animation
+        clearInterval(progressInterval);
+        loader.style.transition = 'opacity 0.8s ease-out';
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.remove();
+            if (typeof transform === 'function' && targets?.table) {
                 transform(targets.table, 2000);
-            }, 500);
-        }
+            }
+        }, 800);
     });
 
     initParticles();
