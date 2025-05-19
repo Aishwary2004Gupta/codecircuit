@@ -250,23 +250,25 @@ function initializeElements() {
 
     // Update search button click handler
     searchButton.addEventListener('click', () => {
-        const isSearching = searchButton.getAttribute('data-state') === 'search';
-        
-        if (isSearching) {
-            searchModal.classList.add('active');
-            searchButton.innerHTML = '+';
-            searchButton.setAttribute('data-state', 'close');
-            searchModal.querySelector('#searchElement').focus();
-        } else {
-            searchModal.classList.remove('active');
-            searchButton.innerHTML = '🔍';
-            searchButton.setAttribute('data-state', 'search');
-            searchModal.querySelector('#searchElement').value = '';
-            // Reset element visibility
+        if (isFiltered) {
+            isFiltered = false;
             elements.forEach(el => {
                 el.style.opacity = '1';
                 el.style.pointerEvents = 'auto';
             });
+            searchInput.value = '';
+            searchButton.innerHTML = '🔍';
+            return;
+        }
+        
+        const isSearching = searchButton.getAttribute('data-state') === 'search';
+        if (isSearching) {
+            searchModal.classList.add('active');
+            searchButton.setAttribute('data-state', 'close');
+            searchInput.focus();
+        } else {
+            searchModal.classList.remove('active');
+            searchButton.setAttribute('data-state', 'search');
         }
     });
 
@@ -282,27 +284,49 @@ function initializeElements() {
 
     // Handle search input
     const searchInput = searchModal.querySelector('#searchElement');
-    searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        elements.forEach(element => {
-            const symbol = element.querySelector('.symbol').textContent;
-            const name = element.querySelector('.details').textContent.split('\n')[0];
-            const properties = elementProperties[symbol] || defaultProperties;
+    let isFiltered = false;
+    
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            isFiltered = true;
+            const searchTerm = e.target.value.toLowerCase();
             
-            // Search across all properties
-            const matchesSearch = [
-                symbol.toLowerCase(),                    // Symbol
-                name.toLowerCase(),                      // Name
-                properties.category.toLowerCase(),       // Category
-                properties.state.toLowerCase(),          // State
-                properties.block.toLowerCase(),          // Block
-                properties.electronConfig.toLowerCase(), // Electronic Configuration
-                properties.type.toLowerCase()            // Type (metal/nonmetal/noble)
-            ].some(text => text.includes(searchTerm));
+            elements.forEach(element => {
+                const symbol = element.querySelector('.symbol').textContent;
+                const name = element.querySelector('.details').textContent.split('\n')[0];
+                const properties = elementProperties[symbol] || defaultProperties;
+                
+                const matchesSearch = [
+                    symbol.toLowerCase(),
+                    name.toLowerCase(),
+                    properties.category.toLowerCase(),
+                    properties.state.toLowerCase(),
+                    properties.block.toLowerCase(),
+                    properties.electronConfig.toLowerCase(),
+                    properties.type.toLowerCase()
+                ].some(text => text.includes(searchTerm));
+                
+                element.style.opacity = matchesSearch ? '1' : '0.2';
+                element.style.pointerEvents = matchesSearch ? 'auto' : 'none';
+            });
             
-            element.style.opacity = matchesSearch ? '1' : '0.2';
-            element.style.pointerEvents = matchesSearch ? 'auto' : 'none';
-        });
+            searchModal.classList.remove('active');
+            searchButton.innerHTML = '✕';
+        }
+    });
+
+    // Update click handler to clear search
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-modal') && !e.target.closest('.search-button') && isFiltered) {
+            isFiltered = false;
+            elements.forEach(el => {
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            });
+            searchInput.value = '';
+            searchButton.innerHTML = '🔍';
+        }
     });
 
     // Initialize element types and hover effects
