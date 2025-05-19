@@ -1,10 +1,10 @@
 {
   "particles": {
     "number": {
-      "value": 40,
+      "value": 30,
       "density": {
         "enable": true,
-        "value_area": 1000
+        "value_area": 1500
       }
     },
     "color": {
@@ -19,37 +19,33 @@
       "type": "circle"
     },
     "opacity": {
-      "value": 0.1,
-      "random": true,
+      "value": 0.08,
+      "random": false,
       "anim": {
-        "enable": true,
-        "speed": 0.5,
-        "opacity_min": 0.05
+        "enable": false
       }
     },
     "size": {
-      "value": 3,
-      "random": true
+      "value": 2,
+      "random": false
     },
     "line_linked": {
       "enable": true,
-      "distance": 150,
+      "distance": 200,
       "color": "#4a90e2",
-      "opacity": 0.1,
+      "opacity": 0.08,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 0.5,
+      "speed": 0.3,
       "direction": "none",
-      "random": true,
+      "random": false,
       "straight": false,
       "out_mode": "out",
       "bounce": false,
       "attract": {
-        "enable": true,
-        "rotateX": 600,
-        "rotateY": 1200
+        "enable": false
       }
     }
   },
@@ -66,10 +62,11 @@
       "grab": {
         "distance": 150,
         "line_linked": {
-          "opacity": 0.2
+          "opacity": 0.1
         }
       }
     }
   },
-  "retina_detect": false
+  "retina_detect": false,
+  "fps_limit": 30
 }
