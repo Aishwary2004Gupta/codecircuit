@@ -286,6 +286,29 @@ function initializeElements() {
     const searchInput = searchModal.querySelector('#searchElement');
     let isFiltered = false;
     
+    // Add real-time search
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        elements.forEach(element => {
+            const symbol = element.querySelector('.symbol').textContent;
+            const name = element.querySelector('.details').textContent.split('\n')[0];
+            const properties = elementProperties[symbol] || defaultProperties;
+            
+            const matchesSearch = [
+                symbol.toLowerCase(),
+                name.toLowerCase(),
+                properties.category.toLowerCase(),
+                properties.state.toLowerCase(),
+                properties.block.toLowerCase(),
+                properties.type.toLowerCase()
+            ].some(text => text.includes(searchTerm));
+            
+            // Keep element in place but change opacity
+            element.style.opacity = matchesSearch ? '1' : '0.2';
+        });
+    });
+
+    // Keep existing Enter key handler
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -303,7 +326,6 @@ function initializeElements() {
                     properties.category.toLowerCase(),
                     properties.state.toLowerCase(),
                     properties.block.toLowerCase(),
-                    properties.electronConfig.toLowerCase(),
                     properties.type.toLowerCase()
                 ].some(text => text.includes(searchTerm));
                 
