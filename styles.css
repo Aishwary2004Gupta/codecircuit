@@ -406,3 +406,60 @@ a:hover {
     50% { box-shadow: 0 0 50px #9370db, 0 15px 30px rgba(0, 0, 0, 0.4); }
     100% { box-shadow: 0 0 30px #9370db, 0 15px 30px rgba(0, 0, 0, 0.4); }
 }
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    .element {
+        width: 90px;
+        height: 120px;
+    }
+
+    .element .symbol {
+        font-size: 40px;
+    }
+
+    .element .details {
+        font-size: 10px;
+    }
+
+    #menu {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+
+/* Element tooltip */
+.element-tooltip {
+    position: absolute;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    color: white;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.element:hover .element-tooltip {
+    opacity: 1;
+}
+
+/* Animation utilities */
+.animate-fadeIn { animation: fadeIn 0.5s ease; }
+.animate-slideIn { animation: slideIn 0.5s ease; }
+.animate-scaleIn { animation: scaleIn 0.3s ease; }
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
