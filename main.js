@@ -245,36 +245,6 @@ function initializeElements() {
         .search-container {
             position: relative;
         }
-
-        .clear-search {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            padding: 4px;
-            line-height: 1;
-            font-size: 18px;
-            display: none;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            text-align: center;
-        }
-
-        .clear-search:hover {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .clear-search.visible {
-            display: flex;
-        }
     `;
     document.head.appendChild(searchStyles);
 
@@ -310,29 +280,9 @@ function initializeElements() {
     `;
     document.body.appendChild(searchModal);
 
-    // Add clear button to search input
-    const searchContainer = searchModal.querySelector('.search-container');
-    const clearButton = document.createElement('button');
-    clearButton.className = 'clear-search';
-    clearButton.innerHTML = '×';
-    clearButton.addEventListener('click', () => {
-        searchInput.value = '';
-        clearButton.classList.remove('visible');
-        // Reset element visibility
-        elements.forEach(el => {
-            el.style.opacity = '1';
-            el.style.pointerEvents = 'auto';
-        });
-        searchInput.focus();
-    });
-    searchContainer.appendChild(clearButton);
-
     // Handle search input
     const searchInput = searchModal.querySelector('#searchElement');
     searchInput.addEventListener('input', (e) => {
-        const hasValue = e.target.value.length > 0;
-        clearButton.classList.toggle('visible', hasValue);
-        
         const searchTerm = e.target.value.toLowerCase();
         elements.forEach(element => {
             const symbol = element.querySelector('.symbol').textContent;
