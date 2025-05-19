@@ -79,8 +79,65 @@ function createHoverCard(element, properties) {
         </div>
     `;
     
+    // Add positioning class
+    card.classList.add('element-hover-card');
+    
     return card;
 }
+
+// Add new styles for hover cards
+const cardStyles = document.createElement('style');
+cardStyles.textContent = `
+    .element-hover-card {
+        position: fixed;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 20px;
+        min-width: 300px;
+        color: white;
+        z-index: 1000;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+    }
+
+    .element-hover-card h2 {
+        font-size: 2em;
+        margin: 0 0 5px 0;
+        color: #ffd700;
+    }
+
+    .element-hover-card h3 {
+        font-size: 1.2em;
+        margin: 0 0 15px 0;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .property-grid {
+        display: grid;
+        gap: 10px;
+    }
+
+    .property {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .property label {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9em;
+    }
+
+    .property span {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9em;
+    }
+`;
+document.head.appendChild(cardStyles);
 
 function initializeElements() {
     const propertyFilter = document.getElementById('propertyFilter');
@@ -222,7 +279,7 @@ function initializeElements() {
             element.classList.add('element-highlighted');
         });
         
-        // Add hover card functionality
+        // Update hover card positioning logic
         element.addEventListener('mouseenter', (e) => {
             const hoverCard = createHoverCard(element, properties);
             document.body.appendChild(hoverCard);
@@ -230,9 +287,48 @@ function initializeElements() {
             const rect = element.getBoundingClientRect();
             const cardRect = hoverCard.getBoundingClientRect();
             
-            // Position the card next to the element
-            hoverCard.style.left = `${rect.right + 10}px`;
-            hoverCard.style.top = `${rect.top - (cardRect.height / 2) + (rect.height / 2)}px`;
+            // Calculate available space on each side
+            const spaceRight = window.innerWidth - rect.right;
+            const spaceLeft = rect.left;
+            const spaceTop = rect.top;
+            const spaceBottom = window.innerHeight - rect.bottom;
+            
+            let left, top;
+            
+            // Horizontal positioning
+            if (spaceRight >= cardRect.width + 10) {
+                // Show on right if enough space
+                left = rect.right + 10;
+            } else if (spaceLeft >= cardRect.width + 10) {
+                // Show on left if enough space
+                left = rect.left - cardRect.width - 10;
+            } else {
+                // Center horizontally if no space on either side
+                left = Math.max(10, Math.min(window.innerWidth - cardRect.width - 10,
+                    rect.left + (rect.width - cardRect.width) / 2));
+            }
+            
+            // Vertical positioning
+            if (spaceBottom >= cardRect.height + 10 || spaceTop < cardRect.height) {
+                // Show below element
+                top = Math.min(window.innerHeight - cardRect.height - 10,
+                    rect.bottom + 10);
+            } else {
+                // Show above element
+                top = Math.max(10, rect.top - cardRect.height - 10);
+            }
+            
+            // Apply final position
+            hoverCard.style.left = `${left}px`;
+            hoverCard.style.top = `${top}px`;
+            
+            // Add entrance animation
+            hoverCard.style.opacity = '0';
+            hoverCard.style.transform = 'scale(0.95)';
+            requestAnimationFrame(() => {
+                hoverCard.style.opacity = '1';
+                hoverCard.style.transform = 'scale(1)';
+            });
         });
         
         element.addEventListener('mouseleave', () => {
