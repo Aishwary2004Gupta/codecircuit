@@ -167,22 +167,13 @@ function initializeElements() {
     const propertyFilter = document.getElementById('propertyFilter');
     const elements = document.querySelectorAll('.element');
     
-    // Create search button and modal
+    // Create search button with toggle functionality
     const searchButton = document.createElement('button');
     searchButton.innerHTML = '🔍';
     searchButton.className = 'search-button';
+    searchButton.setAttribute('data-state', 'search');
     document.body.appendChild(searchButton);
 
-    const searchModal = document.createElement('div');
-    searchModal.className = 'search-modal';
-    searchModal.innerHTML = `
-        <div class="search-container">
-            <input type="text" id="searchElement" placeholder="Search elements...">
-        </div>
-    `;
-    document.body.appendChild(searchModal);
-
-    // Add search styles
     const searchStyles = document.createElement('style');
     searchStyles.textContent = `
         .search-button {
@@ -207,8 +198,12 @@ function initializeElements() {
             line-height: 1;
         }
 
+        .search-button[data-state="close"] {
+            transform: rotate(45deg);
+            font-size: 24px;
+        }
+
         .search-button:hover {
-            transform: scale(1.1);
             background: rgba(30, 41, 59, 1);
         }
 
@@ -217,7 +212,7 @@ function initializeElements() {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.95);
             z-index: 1001;
             background: rgba(30, 41, 59, 0.95);
             padding: 20px;
@@ -225,15 +220,20 @@ function initializeElements() {
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
         }
 
         .search-modal.active {
             display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         #searchElement {
             width: 300px;
             padding: 12px 20px;
+            padding-right: 40px;
             border-radius: 25px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(20, 30, 45, 0.9);
@@ -241,31 +241,98 @@ function initializeElements() {
             font-size: 16px;
             outline: none;
         }
+
+        .search-container {
+            position: relative;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            font-size: 18px;
+            display: none;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            text-align: center;
+        }
+
+        .clear-search:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .clear-search.visible {
+            display: flex;
+        }
     `;
     document.head.appendChild(searchStyles);
 
-    // Add click handlers for search
+    // Update search button click handler
     searchButton.addEventListener('click', () => {
-        searchModal.classList.add('active');
-        searchModal.querySelector('#searchElement').focus();
-    });
-
-    // Close modal on escape or click outside
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        const isSearching = searchButton.getAttribute('data-state') === 'search';
+        
+        if (isSearching) {
+            searchModal.classList.add('active');
+            searchButton.innerHTML = '+';
+            searchButton.setAttribute('data-state', 'close');
+            searchModal.querySelector('#searchElement').focus();
+        } else {
             searchModal.classList.remove('active');
+            searchButton.innerHTML = '🔍';
+            searchButton.setAttribute('data-state', 'search');
+            searchModal.querySelector('#searchElement').value = '';
+            // Reset element visibility
+            elements.forEach(el => {
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            });
         }
     });
 
-    document.addEventListener('click', (e) => {
-        if (!searchModal.contains(e.target) && e.target !== searchButton) {
-            searchModal.classList.remove('active');
-        }
+    // Create search modal
+    const searchModal = document.createElement('div');
+    searchModal.className = 'search-modal';
+    searchModal.innerHTML = `
+        <div class="search-container">
+            <input type="text" id="searchElement" placeholder="Search elements...">
+        </div>
+    `;
+    document.body.appendChild(searchModal);
+
+    // Add clear button to search input
+    const searchContainer = searchModal.querySelector('.search-container');
+    const clearButton = document.createElement('button');
+    clearButton.className = 'clear-search';
+    clearButton.innerHTML = '×';
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        clearButton.classList.remove('visible');
+        // Reset element visibility
+        elements.forEach(el => {
+            el.style.opacity = '1';
+            el.style.pointerEvents = 'auto';
+        });
+        searchInput.focus();
     });
+    searchContainer.appendChild(clearButton);
 
     // Handle search input
     const searchInput = searchModal.querySelector('#searchElement');
     searchInput.addEventListener('input', (e) => {
+        const hasValue = e.target.value.length > 0;
+        clearButton.classList.toggle('visible', hasValue);
+        
         const searchTerm = e.target.value.toLowerCase();
         elements.forEach(element => {
             const symbol = element.querySelector('.symbol').textContent;
