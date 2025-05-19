@@ -432,8 +432,68 @@ styles.textContent = `
         50% { box-shadow: 0 0 50px #ffd700, 0 15px 30px rgba(0, 0, 0, 0.4); }
         100% { box-shadow: 0 0 30px #ffd700, 0 15px 30px rgba(0, 0, 0, 0.4); }
     }
+
+    .element:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .element-hover-card {
+        animation: fadeIn 0.3s ease-out;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-button, .search-modal, .element-hover-card {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
 `;
 document.head.appendChild(styles);
+
+// Particles.js styles and initialization
+const particleStyles = document.createElement('style');
+particleStyles.textContent = `
+    .particles-js {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+`;
+document.head.appendChild(particleStyles);
+
+function initParticles() {
+    const particlesContainer = document.createElement('div');
+    particlesContainer.id = 'particles-js';
+    document.body.insertBefore(particlesContainer, document.body.firstChild);
+    
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#ffffff' },
+            opacity: { value: 0.2 },
+            size: { value: 3 },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.1,
+                width: 1
+            }
+        }
+    });
+}
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -459,5 +519,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 transform(targets.table, 2000);
             }, 500);
         }
+    });
+
+    initParticles();
+});
+
+// Add to your existing styles
+const categoryColors = {
+    'Alkali Metal': '#ff6b6b',
+    'Alkaline Earth Metal': '#4ecdc4',
+    'Transition Metal': '#45b7d1',
+    'Post-Transition Metal': '#96ceb4',
+    'Reactive Nonmetal': '#ffeead',
+    'Noble Gas': '#d4a4eb',
+    'Halogen': '#ffcc5c'
+};
+
+// Apply colors to elements based on their category
+elements.forEach(element => {
+    const symbol = element.querySelector('.symbol').textContent;
+    const properties = elementProperties[symbol] || defaultProperties;
+    const color = categoryColors[properties.category];
+    if (color) {
+        element.style.borderColor = color;
+        element.style.boxShadow = `0 0 15px ${color}33`;
+    }
+});
+
+// Add vanilla-tilt.js effect to elements
+elements.forEach(element => {
+    VanillaTilt.init(element, {
+        max: 15,
+        speed: 400,
+        glare: true,
+        'max-glare': 0.2
     });
 });

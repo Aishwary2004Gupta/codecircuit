@@ -752,45 +752,7 @@
 
 		</script>
 		<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        // Debounce function for performance
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    // Optimize background animation
-    const body = document.body;
-    body.style.transition = 'background 0.3s ease-out';
-    
-    // Throttled background update
-    const updateBackground = debounce((x, y) => {
-        requestAnimationFrame(() => {
-            body.style.background = `
-                radial-gradient(at ${x}% ${y}%, rgba(28, 19, 145, 0.15) 0%, transparent 50%),
-                radial-gradient(at ${100-x}% ${100-y}%, rgba(111, 0, 232, 0.15) 0%, transparent 50%),
-                #0a0f1d
-            `;
-        });
-    }, 16); // Approximately 60fps
-
-    // Optimized event listener
-    window.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth) * 100;
-        const y = (e.clientY / window.innerHeight) * 100;
-        updateBackground(x, y);
-    }, { passive: true });
-
-    // Initialize particles with reduced count
-    particlesJS.load('particles-js', 'particles-config.json');
-    </script>
+		<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
 		<script src="background.js"></script>
 	</body>
 </html>
