@@ -44,7 +44,6 @@ class BackgroundEffect {
     createGradient() {
         const { width, height, ctx, gradient, mouse } = this;
         
-        // Dynamic gradient center based on mouse position
         const centerX = mouse.x || width / 2;
         const centerY = mouse.y || height / 2;
         const radius = Math.max(width, height);
@@ -80,17 +79,14 @@ class BackgroundEffect {
                 p.y += Math.sin(angle) * 0.5;
             }
             
-            // Update position
             p.x += p.speedX;
             p.y += p.speedY;
             
-            // Wrap around screen
             if (p.x < 0) p.x = width;
             if (p.x > width) p.x = 0;
             if (p.y < 0) p.y = height;
             if (p.y > height) p.y = 0;
             
-            // Draw particle
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
@@ -101,14 +97,11 @@ class BackgroundEffect {
     animate(timestamp = 0) {
         const { ctx, width, height } = this;
         
-        // Clear canvas
         ctx.fillStyle = this.createGradient();
         ctx.fillRect(0, 0, width, height);
         
-        // Draw particles
         this.drawParticles();
         
-        // Add subtle overlay
         ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         ctx.fillRect(0, 0, width, height);
         
@@ -116,7 +109,6 @@ class BackgroundEffect {
     }
 }
 
-// Initialize background once DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new BackgroundEffect();
 });
