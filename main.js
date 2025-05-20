@@ -43,11 +43,11 @@ const defaultProperties = {
 function createHoverCard(element, properties) {
     const card = document.createElement('div');
     card.className = 'element-hover-card';
-    
+
     const symbol = element.querySelector('.symbol').textContent;
     const details = element.querySelector('.details').textContent;
     const mass = element.querySelector('.atomic-mass')?.textContent || details.split('\n')[1] || '';
-    
+
     card.innerHTML = `
         <h2>${symbol}</h2>
         <h3>${details}</h3>
@@ -74,7 +74,7 @@ function createHoverCard(element, properties) {
             </div>
         </div>
     `;
-    
+
     return card;
 }
 
@@ -211,7 +211,7 @@ function createLoadingScreen() {
 function initializeElements() {
     const propertyFilter = document.getElementById('propertyFilter');
     const elements = document.querySelectorAll('.element');
-    
+
     const searchButton = document.createElement('button');
     searchButton.innerHTML = '🔍';
     searchButton.className = 'search-button';
@@ -303,7 +303,7 @@ function initializeElements() {
             searchButton.innerHTML = '🔍';
             return;
         }
-        
+
         const isSearching = searchButton.getAttribute('data-state') === 'search';
         if (isSearching) {
             searchModal.classList.add('active');
@@ -326,14 +326,14 @@ function initializeElements() {
 
     const searchInput = searchModal.querySelector('#searchElement');
     let isFiltered = false;
-    
+
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         elements.forEach(element => {
             const symbol = element.querySelector('.symbol').textContent;
             const name = element.querySelector('.details').textContent.split('\n')[0];
             const properties = elementProperties[symbol] || defaultProperties;
-            
+
             const matchesSearch = [
                 symbol.toLowerCase(),
                 name.toLowerCase(),
@@ -342,7 +342,7 @@ function initializeElements() {
                 properties.block.toLowerCase(),
                 properties.type.toLowerCase()
             ].some(text => text.includes(searchTerm));
-            
+
             element.style.opacity = matchesSearch ? '1' : '0.2';
         });
     });
@@ -352,12 +352,12 @@ function initializeElements() {
             e.preventDefault();
             isFiltered = true;
             const searchTerm = e.target.value.toLowerCase();
-            
+
             elements.forEach(element => {
                 const symbol = element.querySelector('.symbol').textContent;
                 const name = element.querySelector('.details').textContent.split('\n')[0];
                 const properties = elementProperties[symbol] || defaultProperties;
-                
+
                 const matchesSearch = [
                     symbol.toLowerCase(),
                     name.toLowerCase(),
@@ -366,11 +366,11 @@ function initializeElements() {
                     properties.block.toLowerCase(),
                     properties.type.toLowerCase()
                 ].some(text => text.includes(searchTerm));
-                
+
                 element.style.opacity = matchesSearch ? '1' : '0.2';
                 element.style.pointerEvents = matchesSearch ? 'auto' : 'none';
             });
-            
+
             searchModal.classList.remove('active');
             searchButton.innerHTML = '✕';
         }
@@ -391,25 +391,25 @@ function initializeElements() {
     elements.forEach(element => {
         const symbol = element.querySelector('.symbol').textContent;
         const properties = elementProperties[symbol] || defaultProperties;
-        
+
         element.classList.add(`property-${properties.type}`);
-        
+
         element.addEventListener('click', (e) => {
             elements.forEach(el => el.classList.remove('element-highlighted'));
             element.classList.add('element-highlighted');
         });
-        
+
         element.addEventListener('mouseenter', (e) => {
             const hoverCard = createHoverCard(element, properties);
             document.body.appendChild(hoverCard);
-            
+
             const rect = element.getBoundingClientRect();
             const cardRect = hoverCard.getBoundingClientRect();
-            
+
             hoverCard.style.left = `${rect.right + 10}px`;
             hoverCard.style.top = `${rect.top - (cardRect.height / 2) + (rect.height / 2)}px`;
         });
-        
+
         element.addEventListener('mouseleave', () => {
             const existingCard = document.querySelector('.element-hover-card');
             if (existingCard) {
@@ -426,11 +426,11 @@ function initializeElements() {
 
     propertyFilter.addEventListener('change', (e) => {
         const filterValue = e.target.value;
-        
+
         elements.forEach(element => {
             const symbol = element.querySelector('.symbol').textContent;
             const properties = elementProperties[symbol] || defaultProperties;
-            
+
             const isVisible = filterValue === 'all' || properties.type === filterValue;
             element.style.opacity = isVisible ? '1' : '0.2';
             element.style.pointerEvents = isVisible ? 'auto' : 'none';
@@ -500,7 +500,7 @@ function initParticles() {
     const particlesContainer = document.createElement('div');
     particlesContainer.id = 'particles-js';
     document.body.insertBefore(particlesContainer, document.body.firstChild);
-    
+
     particlesJS('particles-js', {
         particles: {
             number: { value: 80, density: { enable: true, value_area: 800 } },
@@ -520,7 +520,7 @@ function initParticles() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const { loader, progressInterval } = createLoadingScreen();
-    
+
     Promise.all([
         new Promise(resolve => {
             initializeElements();
