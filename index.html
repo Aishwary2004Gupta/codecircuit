@@ -216,7 +216,6 @@
         to { opacity: 1; }
     }
 
-    /* Add link to Google Fonts at the top of head section */
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
     #particles-js {
@@ -417,7 +416,6 @@
 
 				scene = new THREE.Scene();
 
-				// table
 				for (let i = 0; i < table.length; i += 5) {
 					const element = document.createElement('div');
 					element.className = 'element';
@@ -426,31 +424,26 @@
 					const elementName = table[i + 1];
 					const atomicMass = table[i + 2];
 					
-					// Add number (atomic number)
 					const number = document.createElement('div');
 					number.className = 'number';
 					number.textContent = (i / 5) + 1;
 					element.appendChild(number);
 
-					// Add symbol
 					const symbol = document.createElement('div');
 					symbol.className = 'symbol';
 					symbol.textContent = elementSymbol;
 					element.appendChild(symbol);
 
-					// Add details - only element name and remove atomic mass from name
 					const details = document.createElement('div');
 					details.className = 'details';
-					details.innerHTML = elementName; // Only show element name here
+					details.innerHTML = elementName;
 					element.appendChild(details);
 
-					// Add atomic mass as a separate div
 					const mass = document.createElement('div');
 					mass.className = 'atomic-mass';
 					mass.textContent = atomicMass;
 					element.appendChild(mass);
 
-					// Add initial transform for load animation
 					const objectCSS = new CSS3DObject(element);
 					objectCSS.position.x = Math.random() * 4000 - 2000;
 					objectCSS.position.y = Math.random() * 4000 - 2000;
@@ -461,86 +454,55 @@
 					scene.add(objectCSS);
 					objects.push(objectCSS);
 
-					// Create target
 					const object = new THREE.Object3D();
 					object.position.x = (table[i + 3] * 140) - 1330;
 					object.position.y = -(table[i + 4] * 180) + 990;
 					targets.table.push(object);
 				}
 
-				// sphere
-
 				const vector = new THREE.Vector3();
 
 				for ( let i = 0, l = objects.length; i < l; i ++ ) {
-
 					const phi = Math.acos( - 1 + ( 2 * i ) / l );
 					const theta = Math.sqrt( l * Math.PI ) * phi;
-
 					const object = new THREE.Object3D();
-
 					object.position.setFromSphericalCoords( 800, phi, theta );
-
 					vector.copy( object.position ).multiplyScalar( 2 );
-
 					object.lookAt( vector );
-
 					targets.sphere.push( object );
-
 				}
 
-				// helix
-
 				for ( let i = 0, l = objects.length; i < l; i ++ ) {
-
 					const theta = i * 0.175 + Math.PI;
 					const y = - ( i * 8 ) + 450;
-
 					const object = new THREE.Object3D();
-
 					object.position.setFromCylindricalCoords( 900, theta, y );
-
 					vector.x = object.position.x * 2;
 					vector.y = object.position.y;
 					vector.z = object.position.z * 2;
-
 					object.lookAt( vector );
-
 					targets.helix.push( object );
-
 				}
 
-				// grid
-
 				for ( let i = 0; i < objects.length; i ++ ) {
-
 					const object = new THREE.Object3D();
-
 					object.position.x = ( ( i % 5 ) * 400 ) - 800;
 					object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
 					object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
-
 					targets.grid.push( object );
-
 				}
-
-				//
 
 				renderer = new CSS3DRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.getElementById( 'container' ).appendChild( renderer.domElement );
-
-				//
 
 				controls = new TrackballControls( camera, renderer.domElement );
 				controls.minDistance = 500;
 				controls.maxDistance = 6000;
 				controls.addEventListener( 'change', render );
 
-				// Update button event listeners
 				const buttonTable = document.getElementById('table');
 				buttonTable.addEventListener('click', function() {
-					// Reset positions first
 					objects.forEach(obj => {
 						obj.position.set(
 							Math.random() * 4000 - 2000,
@@ -550,12 +512,10 @@
 						obj.rotation.set(0, 0, 0);
 					});
 					
-					// Reset camera and controls
 					camera.position.set(0, 0, 3000);
 					camera.rotation.set(0, 0, 0);
 					controls.reset();
 					
-					// Wait a moment before transforming
 					setTimeout(() => transform(targets.table, 2000), 500);
 				});
 
@@ -607,7 +567,6 @@
 					setTimeout(() => transform(targets.grid, 2000), 500);
 				});
 
-				// Initial animation
 				objects.forEach((obj, i) => {
 					new TWEEN.Tween(obj.position)
 						.to({ 
@@ -626,7 +585,6 @@
 						.start();
 				});
 
-				// Add fade-in effect to body
 				document.body.style.opacity = '0';
 				document.body.style.transition = 'opacity 1s ease-in';
 				setTimeout(() => {
@@ -635,8 +593,6 @@
 
 				transform( targets.table, 2000 );
 
-				//
-
 				window.addEventListener( 'resize', onWindowResize );
 
 			}
@@ -644,7 +600,6 @@
 			function handleViewTransition(targetName) {
     TWEEN.removeAll();
     
-    // First scatter the objects with smoother animation
     objects.forEach(obj => {
         new TWEEN.Tween(obj.position)
             .to({
@@ -652,7 +607,7 @@
                 y: Math.random() * 4000 - 2000,
                 z: Math.random() * 4000 - 2000
             }, 1000)
-            .easing(TWEEN.Easing.Quintic.InOut)  // Smoother easing
+            .easing(TWEEN.Easing.Quintic.InOut)
             .start();
 
         new TWEEN.Tween(obj.rotation)
@@ -661,7 +616,6 @@
             .start();
     });
 
-    // Smooth camera reset
     new TWEEN.Tween(camera.position)
         .to({ x: 0, y: 0, z: 3000 }, 1000)
         .easing(TWEEN.Easing.Quintic.InOut)
@@ -674,11 +628,9 @@
 
     controls.reset();
 
-    // Transform to target after scattering
     setTimeout(() => transform(targets[targetName], 2500), 1000);
 }
 
-				// Update button handlers to use the new transition function
 				const buttonTable = document.getElementById('table');
 				buttonTable.addEventListener('click', () => handleViewTransition('table'));
 
@@ -691,7 +643,6 @@
 				const buttonGrid = document.getElementById('grid');
 				buttonGrid.addEventListener('click', () => handleViewTransition('grid'));
 
-				// Update transform function for smoother transitions
 				function transform(targets, duration) {
     TWEEN.removeAll();
 
