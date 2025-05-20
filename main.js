@@ -1,5 +1,4 @@
 const elementProperties = {
-    // Metals (Groups 1-12 and parts of 13-16)
     'Li': { type: 'metal', category: 'Alkali Metal', state: 'Solid', block: 's', electronConfig: '[He] 2s¹' },
     'Na': { type: 'metal', category: 'Alkali Metal', state: 'Solid', block: 's', electronConfig: '[Ne] 3s¹' },
     'K': { type: 'metal', category: 'Alkali Metal', state: 'Solid', block: 's', electronConfig: '[Ar] 4s¹' },
@@ -14,7 +13,6 @@ const elementProperties = {
     'Pb': { type: 'metal', category: 'Post-Transition Metal', state: 'Solid', block: 'p', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²' },
     'Au': { type: 'metal', category: 'Transition Metal', state: 'Solid', block: 'd', electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s¹' },
 
-    // Non-metals (Groups 14-17)
     'H': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Gas', block: 's', electronConfig: '1s¹' },
     'C': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Solid', block: 'p', electronConfig: '[He] 2s² 2p²' },
     'N': { type: 'nonmetal', category: 'Reactive Nonmetal', state: 'Gas', block: 'p', electronConfig: '[He] 2s² 2p³' },
@@ -25,7 +23,6 @@ const elementProperties = {
     'Cl': { type: 'nonmetal', category: 'Halogen', state: 'Gas', block: 'p', electronConfig: '[Ne] 3s² 3p⁵' },
     'I': { type: 'nonmetal', category: 'Halogen', state: 'Solid', block: 'p', electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁵' },
 
-    // Noble Gases (Group 18)
     'He': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 's', electronConfig: '1s²' },
     'Ne': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[He] 2s² 2p⁶' },
     'Ar': { type: 'noble', category: 'Noble Gas', state: 'Gas', block: 'p', electronConfig: '[Ne] 3s² 3p⁶' },
@@ -35,7 +32,6 @@ const elementProperties = {
 };
 
 
-// Default type for elements not explicitly defined
 const defaultProperties = {
     type: 'metal',
     category: 'Transition Metal',
@@ -200,7 +196,6 @@ function createLoadingScreen() {
     `;
     document.head.appendChild(loaderStyles);
 
-    // Simulate loading progress
     let progress = 0;
     const progressText = loader.querySelector('.loading-progress');
     const progressInterval = setInterval(() => {
@@ -217,7 +212,6 @@ function initializeElements() {
     const propertyFilter = document.getElementById('propertyFilter');
     const elements = document.querySelectorAll('.element');
     
-    // Create search button with toggle functionality
     const searchButton = document.createElement('button');
     searchButton.innerHTML = '🔍';
     searchButton.className = 'search-button';
@@ -298,7 +292,6 @@ function initializeElements() {
     `;
     document.head.appendChild(searchStyles);
 
-    // Update search button click handler
     searchButton.addEventListener('click', () => {
         if (isFiltered) {
             isFiltered = false;
@@ -322,7 +315,6 @@ function initializeElements() {
         }
     });
 
-    // Create search modal
     const searchModal = document.createElement('div');
     searchModal.className = 'search-modal';
     searchModal.innerHTML = `
@@ -332,11 +324,9 @@ function initializeElements() {
     `;
     document.body.appendChild(searchModal);
 
-    // Handle search input
     const searchInput = searchModal.querySelector('#searchElement');
     let isFiltered = false;
     
-    // Add real-time search
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         elements.forEach(element => {
@@ -353,12 +343,10 @@ function initializeElements() {
                 properties.type.toLowerCase()
             ].some(text => text.includes(searchTerm));
             
-            // Keep element in place but change opacity
             element.style.opacity = matchesSearch ? '1' : '0.2';
         });
     });
 
-    // Keep existing Enter key handler
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -388,7 +376,6 @@ function initializeElements() {
         }
     });
 
-    // Update click handler to clear search
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search-modal') && !e.target.closest('.search-button') && isFiltered) {
             isFiltered = false;
@@ -401,22 +388,17 @@ function initializeElements() {
         }
     });
 
-    // Initialize element types and hover effects
     elements.forEach(element => {
         const symbol = element.querySelector('.symbol').textContent;
         const properties = elementProperties[symbol] || defaultProperties;
         
         element.classList.add(`property-${properties.type}`);
         
-        // Add click handler for highlight
         element.addEventListener('click', (e) => {
-            // Remove highlight from other elements
             elements.forEach(el => el.classList.remove('element-highlighted'));
-            // Add highlight to clicked element
             element.classList.add('element-highlighted');
         });
         
-        // Add hover card functionality
         element.addEventListener('mouseenter', (e) => {
             const hoverCard = createHoverCard(element, properties);
             document.body.appendChild(hoverCard);
@@ -424,7 +406,6 @@ function initializeElements() {
             const rect = element.getBoundingClientRect();
             const cardRect = hoverCard.getBoundingClientRect();
             
-            // Position the card next to the element
             hoverCard.style.left = `${rect.right + 10}px`;
             hoverCard.style.top = `${rect.top - (cardRect.height / 2) + (rect.height / 2)}px`;
         });
@@ -437,14 +418,12 @@ function initializeElements() {
         });
     });
 
-    // Add click handler to remove highlight when clicking outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.element')) {
             elements.forEach(el => el.classList.remove('element-highlighted'));
         }
     });
 
-    // Property filter functionality
     propertyFilter.addEventListener('change', (e) => {
         const filterValue = e.target.value;
         
@@ -459,7 +438,6 @@ function initializeElements() {
     });
 }
 
-// Add styles for highlight effect
 const styles = document.createElement('style');
 styles.textContent = `
     .element-highlighted {
@@ -505,7 +483,6 @@ styles.textContent = `
 `;
 document.head.appendChild(styles);
 
-// Particles.js styles and initialization
 const particleStyles = document.createElement('style');
 particleStyles.textContent = `
     .particles-js {
@@ -541,17 +518,14 @@ function initParticles() {
     });
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     const { loader, progressInterval } = createLoadingScreen();
     
-    // Start loading assets and initialization in the background
     Promise.all([
         new Promise(resolve => {
             initializeElements();
             resolve();
         }),
-        // Minimum loading time for animation
         new Promise(resolve => setTimeout(resolve, 2000))
     ]).then(() => {
         clearInterval(progressInterval);
@@ -568,7 +542,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initParticles();
 });
 
-// Add to your existing styles
 const categoryColors = {
     'Alkali Metal': '#ff6b6b',
     'Alkaline Earth Metal': '#4ecdc4',
@@ -579,7 +552,6 @@ const categoryColors = {
     'Halogen': '#ffcc5c'
 };
 
-// Apply colors to elements based on their category
 elements.forEach(element => {
     const symbol = element.querySelector('.symbol').textContent;
     const properties = elementProperties[symbol] || defaultProperties;
@@ -590,7 +562,6 @@ elements.forEach(element => {
     }
 });
 
-// Add vanilla-tilt.js effect to elements
 elements.forEach(element => {
     VanillaTilt.init(element, {
         max: 15,
