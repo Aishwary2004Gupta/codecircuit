@@ -123,7 +123,6 @@ a:hover {
     transform: scale(1.05) rotate(1deg);
 }
 
-/* Updated element type colors with more variations */
 .property-metal { 
     border: 4px solid #ffd700;
     background: linear-gradient(145deg, #ffd700, #ff6b00);
@@ -154,7 +153,6 @@ a:hover {
     animation: float 3s ease-in-out infinite 1s, glowNoble 4s infinite;
 }
 
-/* Category-specific hover effects */
 .property-metal:hover {
     background: linear-gradient(145deg, #ffd700, #ff4500);
     box-shadow: 
@@ -179,7 +177,6 @@ a:hover {
         0 0 30px rgba(170, 0, 255, 0.6);
 }
 
-/* Enhanced glow animations */
 @keyframes glowMetal {
     0%, 100% { filter: brightness(1) saturate(1); }
     50% { filter: brightness(1.4) saturate(1.3); }
@@ -195,7 +192,6 @@ a:hover {
     50% { filter: brightness(1.4) saturate(1.3); }
 }
 
-/* Enhanced hover card styles based on element type */
 .property-metal .element-hover-card {
     background: linear-gradient(145deg, rgba(255, 215, 0, 0.95), rgba(255, 107, 0, 0.95));
     border-color: #ffd700;
@@ -211,7 +207,6 @@ a:hover {
     border-color: #aa00ff;
 }
 
-/* Enhanced property boxes */
 .property {
     background: rgba(255, 255, 255, 0.1);
     padding: 12px;
@@ -228,7 +223,6 @@ a:hover {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Element type colors - Updated for cartoon style */
 .property-metal { 
     border: 4px solid #ffd700;
     background: linear-gradient(145deg, #ffd700, #ffa500);
@@ -400,7 +394,6 @@ a:hover {
     100% { box-shadow: 0 0 30px #9370db, 0 15px 30px rgba(0, 0, 0, 0.4); }
 }
 
-/* Responsive layout */
 @media (max-width: 768px) {
     .element {
         width: 90px;
@@ -426,7 +419,6 @@ a:hover {
     }
 }
 
-/* Element tooltip */
 .element-tooltip {
     position: absolute;
     background: rgba(15, 23, 42, 0.95);
@@ -447,7 +439,6 @@ a:hover {
     opacity: 1;
 }
 
-/* Animation utilities */
 .animate-fadeIn { animation: fadeIn 0.5s ease; }
 .animate-slideIn { animation: slideIn 0.5s ease; }
 .animate-scaleIn { animation: scaleIn 0.3s ease; }
