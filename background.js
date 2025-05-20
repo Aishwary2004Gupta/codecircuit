@@ -4,7 +4,7 @@ class BackgroundEffect {
         this.ctx = this.canvas.getContext('2d');
         this.canvas.className = 'background-canvas';
         document.body.insertBefore(this.canvas, document.body.firstChild);
-        
+
         this.mouse = { x: 0, y: 0 };
         this.lastTime = 0;
         this.gradient = {
@@ -15,7 +15,7 @@ class BackgroundEffect {
                 { h: 290, s: 40, l: 12 }
             ]
         };
-        
+
         this.particles = Array(50).fill().map(() => ({
             x: Math.random() * this.width,
             y: Math.random() * this.height,
@@ -24,15 +24,15 @@ class BackgroundEffect {
             speedY: Math.random() * 0.5 - 0.25,
             opacity: Math.random() * 0.5 + 0.25
         }));
-        
+
         window.addEventListener('mousemove', (e) => {
             this.mouse.x = e.clientX;
             this.mouse.y = e.clientY;
         });
-        
+
         this.resize();
         window.addEventListener('resize', () => this.resize(), false);
-        
+
         this.animate();
     }
 
@@ -43,11 +43,11 @@ class BackgroundEffect {
 
     createGradient() {
         const { width, height, ctx, gradient, mouse } = this;
-        
+
         const centerX = mouse.x || width / 2;
         const centerY = mouse.y || height / 2;
         const radius = Math.max(width, height);
-        
+
         gradient.colors.forEach(color => {
             color.h = (color.h + 0.02) % 360;
         });
@@ -58,7 +58,7 @@ class BackgroundEffect {
         );
 
         gradient.colors.forEach((color, i) => {
-            grd.addColorStop(i / (gradient.colors.length - 1), 
+            grd.addColorStop(i / (gradient.colors.length - 1),
                 `hsla(${color.h}, ${color.s}%, ${color.l}%, 1)`);
         });
 
@@ -67,7 +67,7 @@ class BackgroundEffect {
 
     drawParticles() {
         const { ctx, width, height, mouse } = this;
-        
+
         this.particles.forEach(p => {
             // Mouse interaction
             const dx = mouse.x - p.x;
@@ -78,15 +78,15 @@ class BackgroundEffect {
                 p.x += Math.cos(angle) * 0.5;
                 p.y += Math.sin(angle) * 0.5;
             }
-            
+
             p.x += p.speedX;
             p.y += p.speedY;
-            
+
             if (p.x < 0) p.x = width;
             if (p.x > width) p.x = 0;
             if (p.y < 0) p.y = height;
             if (p.y > height) p.y = 0;
-            
+
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
@@ -96,15 +96,15 @@ class BackgroundEffect {
 
     animate(timestamp = 0) {
         const { ctx, width, height } = this;
-        
+
         ctx.fillStyle = this.createGradient();
         ctx.fillRect(0, 0, width, height);
-        
+
         this.drawParticles();
-        
+
         ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         ctx.fillRect(0, 0, width, height);
-        
+
         requestAnimationFrame((ts) => this.animate(ts));
     }
 }
